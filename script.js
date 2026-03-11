@@ -23,7 +23,7 @@ class Biblioteca {
     const existe = this.libros.find((l) => l.titulo === libro.titulo);
 
     if (existe) {
-      console.error("El libro ya existe");
+      console.error("El libro ya existe:", libro.titulo);
       return;
     }
 
@@ -41,7 +41,12 @@ class Biblioteca {
     const libro = this.libros.find((l) => l.titulo === titulo);
 
     if (!libro) {
-      throw new Error("Libro no encontrado");
+      throw new Error("Libro no existe");
+    }
+
+    if (!libro.disponible) {
+      console.log("El libro no está disponible");
+      return;
     }
 
     libro.disponible = false;
@@ -55,8 +60,55 @@ class Biblioteca {
 
     const prestados = total - disponibles;
 
-    console.log("Total:", total);
+    console.log("Total de libros:", total);
     console.log("Disponibles:", disponibles);
     console.log("Prestados:", prestados);
   }
 }
+
+const miBiblioteca = new Biblioteca("Mi Biblioteca");
+
+// Agregar libros
+miBiblioteca.agregarLibro(
+  new Libro("Cien años de soledad", "García Márquez", "Ficción", 1967)
+);
+
+miBiblioteca.agregarLibro(
+  new Libro("El código Da Vinci", "Dan Brown", "Thriller", 2003)
+);
+
+miBiblioteca.agregarLibro(
+  new Libro("Breve historia del tiempo", "Stephen Hawking", "Ciencia", 1988)
+);
+
+miBiblioteca.agregarLibro(
+  new Libro("1984", "George Orwell", "Ficción", 1949)
+);
+
+miBiblioteca.agregarLibro(
+  new Libro("Sapiens", "Yuval Noah Harari", "Historia", 2011)
+);
+
+// Duplicado
+miBiblioteca.agregarLibro(
+  new Libro("El código Da Vinci", "Dan Brown", "Thriller", 2003)
+);
+
+// Prestar
+try {
+  miBiblioteca.prestar("Cien años de soledad");
+  miBiblioteca.prestar("Cien años de soledad");
+} catch (error) {
+  console.error("Error:", error.message);
+}
+
+// Buscar
+const ciencia = miBiblioteca.buscarPorGenero("ciencia");
+
+console.log(
+  "Libros de Ciencia:",
+  ciencia.map((l) => l.info())
+);
+
+// Estadísticas
+miBiblioteca.estadisticas();
